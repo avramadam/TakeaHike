@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Weather Data</title>
+</head>
+
+<body>
+	<!-- Retrieved data will be dumped here -->
+	<div class="row" id="localconditions">
+		<div class="col-xs-4" id="conditions">
+			<div id="openweathermap-widget-15">
+				<div class="city"></div>
+				<div class="temp"></div>
+				<div class="description"></div>
+				<div class="weather"></div>
+				<div class="icon"></div>
+				<div class="wind"></div>
+				<div class="humidity"></div>
+				<div class="sunrise"></div>
+				<div class="sunset"></div>
+			</div>
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+	<script src="https://momentjs.com/downloads/moment-timezone-with-data-2012-2022.js"></script>
+	<link rel="stylesheet" href="assets/css/style.css">
+	<script type="text/javascript">
+		//--------------------------------------------------------------------------------------------------------
+		// This is our API key
+		var APIKey = "166a433c57516f51dfab1f7edaed8413";
+		function getWeather(lat, lon) {
+			// Here we are building the URL we need to query the database
+			var queryURL = "https://api.openweathermap.org/data/2.5/weather?lat=" + 48.8566 + "&lon=" + 2.3522
+				+ "&units=imperial&appid=" + APIKey;
+			var timeURL = "https://maps.googleapis.com/maps/api/timezone/json?" +
+				"location=" + 48.8566 + "," + 2.3522 + "&timestamp=1458000000&"
+				+ "key=AIzaSyBioWxVvt0hksSzteSItrWQ-cq0RgoBz_k";
+
+
+			$.ajax({
+				url: timeURL,
+				method: "GET"
+			}).then(function (result) {
+				//Here we run our AJAX call to the OpenWeatherMap API
+				$.ajax({
+					url: queryURL,
+					method: "GET"
+				})
+					// We store all of the retrieved data inside of an object called "response"
+					.then(function (response) {
+
+						// Log the queryURL
+						console.log(queryURL);
+						console.log(timeURL);
+
+						// Log the resulting object
+						console.log(result);
+						console.log(response);
+
+						// Transfer content to HTML
+						$(".city").html("<h1>" + response.name + " Local Conditions </h1>");
+						$(".temp").text("Temperature: " + response.main.temp + "° F");
+						$(".description").text("Description: " + response.weather[0].description);
+						var iconCode = response.weather[0].icon;
+						var iconUrl = "http://openweathermap.org/img/w/" + iconCode + ".png";
+						$(".weather").text("Weather: " + response.weather[0].main);
+						$(".icon").html("<img src='" + iconUrl + "'>");
+						$(".wind").text("Wind Speed: " + response.wind.speed);
+						$(".humidity").text("Humidity: " + response.main.humidity);
+
+						//Takes the time and converts it from unix to LTS and then finds and converts 
+						//time zone.
+						var sunTimes = moment.unix(response.sys.sunrise);
+						var zoneA = (result.timeZoneId);
+						console.log(zoneA);
+						var zone = moment(sunTimes).tz(zoneA).format("LTS");
+						$(".sunrise").text("Sunrise: " + zone);
+						var setTime = moment.unix(response.sys.sunset);
+						var zones = (setTime).tz(zoneA).format("LTS");
+						$(".sunset").text("Sunset: " + zones);
+
+						// Log the data in the console as well
+						console.log("Temperature (F): " + response.main.temp);
+						console.log("Description: " + response.weather.description);
+						console.log("Weather: " + response.weather.main);
+						console.log("Icon: " + response.weather.icon);
+						console.log("Wind Speed: " + response.wind.speed);
+						console.log("Humidity: " + response.main.humidity);
+						console.log("Sunrise " + sunTimes);
+						console.log("Sunset " + setTime);
+					});
+			});
+
+		}
+		getWeather("lat, lon")
+	</script>
+</body>
+
+</html>

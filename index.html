@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Take a Hike!</title>
+
+	<link rel="stylesheet" href="assets/css/reset.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	 crossorigin="anonymous">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+	<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="assets/javascript/script.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+	<link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Permanent+Marker" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Kanit|Permanent+Marker" rel="stylesheet">
+	<script src="assets/javascript/jquery.raty.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+	<script src="https://momentjs.com/downloads/moment-timezone-with-data-2012-2022.js"></script>
+
+	<!-- <script>window.myWidgetParam ? window.myWidgetParam : window.myWidgetParam = []; window.myWidgetParam.push({ id: 15, cityid: '5318313', appid: '166a433c57516f51dfab1f7edaed8413', units: 'imperial', containerid: 'openweathermap-widget-15', }); (function () { var script = document.createElement('script'); script.async = true; script.charset = "utf-8"; script.src = "//openweathermap.org/themes/openweathermap/assets/vendor/owm/js/weather-widget-generator.js"; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s); })();</script> -->
+</head>
+
+<body>
+	<div class="container-fluid">
+		<!-- Jumbotron with Title -->
+		<div class="jumbotron">
+			<h1 class="text-center" id="hello">
+				<strong>Take A Hike!</strong>
+			</h1>
+		</div>
+		<!-- start button -->
+		<div class="row text-center" id="startbutton">
+			<div class="col-12">
+				<button class="btn btn-success startbtn btn-lg" id="start">
+					<i class="fas fa-chevron-circle-right"></i> Where Should I Go?</button>
+			</div>
+		</div>
+		<!-- about us -->
+		<div class="row" id="aboutus">
+			<div class="col-sm-6" id="about">
+				<img src="assets/images/hikertiny2.png" alt="hiking icon" class="img-thumbnail float-left" id="hikerpic">
+				<p id="words">This app was developed to provide hikers with information about the trails around them, and the ability to share their thoughts with others.</p>
+			</div>
+		</div>
+		<!-- this will hold the add info form to initiate a search/call -->
+		<div class="row" id="frontpage">
+			<div class="col-sm-6">
+				<div class="card mt-3" id="formdiv">
+					<div class="card-header">
+						Add Your Info:
+					</div>
+					<form class="ml-3 mt-3 mr-3">
+						<div class="form-group">
+							<label>Name</label>
+							<input class="form-control" id="name-input" placeholder="Enter name">
+						</div>
+						<div class="form-group">
+							<label>Location*</label>
+							<input class="form-control" id="address-input" placeholder="Enter Address">
+							<span id="err-span" class="error">This field is required</span>
+						</div>
+
+						<div class="form-group">
+							<label>Date</label>
+							<input class="form-control" id="datepicker" placeholder="">
+						</div>
+
+						<button class="btn btn-success" id="add-info">Submit</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- this is the div for the weather widget -->
+		<div class="row" id="localconditions">
+			<div class="col-sm-8" id="conditions">
+				<div id="openweathermap-widget-15">
+					<div class="city title"></div>
+					<hr>
+					<div class="temp"></div>
+					<div class="description"></div>
+					<div class="weather"></div>
+					<div class="icon"></div>
+					<div class="wind"></div>
+					<div class="humidity"></div>
+					<div class="sunrise"></div>
+					<div class="sunset"></div>
+				</div>
+			</div>
+		</div>
+		<!-- this div will hold the trail results that generate after a search -->
+		<div class="row" id="results">
+			<div class="col-sm-8" id="generate">
+			</div>
+		</div>
+		<!-- this div holds the add comment form -->
+		<div class="row" id="commentpanel">
+			<div class="col-sm-6">
+				<div class="card mt-3" id="formdiv">
+					<div class="card-header">
+						Add A Comment:
+					</div>
+					<form class="ml-3 mt-3 mr-3">
+						<div class="form-group">
+							<label>Name</label>
+							<input class="form-control" id="commentname-input" placeholder="Enter name">
+						</div>
+						<div class="form-group">
+							<label>Date</label>
+							<input class="form-control" id="datepicker2" placeholder="">
+						</div>
+						<div class="form-group">
+							<label for="exampleFormControlTextarea1">Comment</label>
+							<textarea class="form-control" id="commenttext" rows="5"></textarea>
+						</div>
+						<button class="btn btn-success" id="add-comment">Submit</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- new search  button -->
+		<div class="row text-center" id="newsearchbutton">
+			<div class="col-12">
+				<button class="btn btn-success startbtn btn-lg" id="newsearch">
+					<i class="fas fa-redo"></i> New Search</button>
+			</div>
+		</div>
+		<!-- leave a comment button -->
+		<div class="row text-center" id="commentbutton">
+			<div class="col-12">
+				<button class="btn commentbtn btn-lg" id="comment">
+					<i class="far fa-comment-alt"></i> Leave a Comment</button>
+			</div>
+		</div>
+		<!-- holds the generated comments -->
+		<div class="row" id="generatedcomments">
+			<div class="col-sm-6">
+				<div class="card" id="commentcard">
+					<div class="card-header">
+						Previous Comments:
+					</div>
+				</div>
+				<table class="table table-striped" id="comment-table">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Date</th>
+							<th>Comment</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- rows with data go here -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+
+</body>
+
+</html>
